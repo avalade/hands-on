@@ -1,0 +1,14 @@
+#!upstart
+# http://upstart.ubuntu.com/cookbook/
+#
+description "hands-on tunnel"
+
+start on (local-filesystems and network-device-up)
+stop on shutdown
+
+# expect fork
+respawn
+respawn limit 10 5
+umask 022
+
+exec su <%= node['hands-on']['user'] %> -c "autossh -M 0 -N -F <%= node['hands-on']['home'] %>/ssh_config -i <%= node['hands-on']['home'] %>/id_rsa <%= node['hands-on']['tunnel_host']['user'] %>@<%= node['hands-on']['tunnel_host']['hostname'] %>"
